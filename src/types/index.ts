@@ -1,3 +1,9 @@
+export interface IPage {
+	counterBasket: number;
+	catalog: HTMLElement[];
+	block: boolean;
+}
+
 /*интерфейс данных карточки, которые подтягиваются с сервера*/
 export interface IProductItem {
 	id: string;
@@ -6,6 +12,7 @@ export interface IProductItem {
 	title: string;
 	category: string[];
 	price: number;
+	button?: HTMLButtonElement;
 }
 
 /*интерфейс состояния для работы с элементами страницы*/
@@ -14,6 +21,16 @@ export interface IAppState {
 	basket: string;
 	preview: string | null;
 	order: IOrder | null;
+}
+
+export type ApiListResponse<Type> = {
+	total: number;
+	items: Type[];
+};
+
+/*интерфейс евента на клик*/
+export interface IActions {
+	onClick: (event: MouseEvent) => void;
 }
 
 /*интерфейс заказа*/
@@ -57,4 +74,8 @@ export interface IBasket {
 /*интерфейс счетчика суммы заказов в корзине*/
 export interface IBasketSum {
 	sum: number;
+}
+
+export interface IModal {
+	content: HTMLElement;
 }
