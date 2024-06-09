@@ -4,15 +4,22 @@ export interface IPage {
 	block: boolean;
 }
 
+export interface IProduct {
+    category: string;
+    title: string;
+    description: string;
+    image: string;
+    price: number;
+}
+
 /*интерфейс данных карточки, которые подтягиваются с сервера*/
 export interface IProductItem {
 	id: string;
 	description?: string;
 	image: string;
 	title: string;
-	category: string[];
+	category: string;
 	price: number;
-	button?: HTMLButtonElement;
 }
 
 /*интерфейс состояния для работы с элементами страницы*/
@@ -79,3 +86,7 @@ export interface IBasketSum {
 export interface IModal {
 	content: HTMLElement;
 }
+
+export interface IProductPreview {
+    text: string;
+}  
