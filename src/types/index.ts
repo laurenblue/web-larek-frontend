@@ -1,33 +1,80 @@
 export interface IPage {
-	counterBasket: number;
-	catalog: HTMLElement[];
-	block: boolean;
+	itemList: HTMLElement[];
 }
 
 export interface IProduct {
-    category: string;
-    title: string;
-    description: string;
-    image: string;
-    price: number;
+	category: string;
+	title: string;
+	description: string;
+	image: string;
+	price: number;
 }
 
-/*интерфейс данных карточки, которые подтягиваются с сервера*/
 export interface IProductItem {
 	id: string;
-	description?: string;
+	description: string;
 	image: string;
 	title: string;
 	category: string;
 	price: number;
 }
 
-/*интерфейс состояния для работы с элементами страницы*/
 export interface IAppState {
-	catalog: IProductItem[];
+	itemList: IProductItem[];
 	basket: string;
 	preview: string | null;
 	order: IOrder | null;
+	formErrors: FormErrors;
+}
+
+export interface IProductPreview {
+	text: string;
+}
+
+export interface IProductBasket {
+	index: number;
+	title: string;
+	price: number;
+}
+
+export interface IActions {
+	onClick: (event: MouseEvent) => void;
+}
+
+export interface IBasket {
+	items: HTMLElement[];
+	total: number;
+}
+
+export interface IValidation {
+	valid: boolean;
+	errors: string[];
+}
+
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
+
+export interface IOrderForm {
+	payment?: string;
+	address?: string;
+	phone?: string;
+	email?: string;
+	total?: string | number;
+}
+
+export interface IOrder extends IOrderForm {
+	items: string[];
+}
+
+export interface ISuccess {
+	total: number;
+}
+
+export interface ISuccessActions {
+	onClick: () => void;
+}
+
+export interface IModalData {
+	content: HTMLElement;
 }
 
 export type ApiListResponse<Type> = {
@@ -35,58 +82,6 @@ export type ApiListResponse<Type> = {
 	items: Type[];
 };
 
-/*интерфейс евента на клик*/
-export interface IActions {
-	onClick: (event: MouseEvent) => void;
-}
-
-/*интерфейс заказа*/
-export interface IOrder extends IOrderForm {
-	items: string[];
-}
-
-/*тип способ оплаты*/
-type Payment = 'онлайн' | 'при получении';
-
-/*валидация формы*/
-export interface IValidation {
-	valid: boolean;
-	errors: string | null;
-}
-
-/*интерфейс формы заказа*/
-export interface IOrderForm {
-	payment: Payment;
-	address: string;
-}
-
-/*интерфейс формы заполнения контактов заказчика*/
-export interface IContactForm {
-	email: string;
-	phone: string;
-}
-
-/*success!*/
-export interface ISuccessfulOrder {
+export interface ISuccessfulForm {
 	id: string;
-	total: number;
 }
-
-/*интерфейс корзины покупок*/
-export interface IBasket {
-	data: IProductItem[];
-	price: number;
-}
-
-/*интерфейс счетчика суммы заказов в корзине*/
-export interface IBasketSum {
-	sum: number;
-}
-
-export interface IModal {
-	content: HTMLElement;
-}
-
-export interface IProductPreview {
-    text: string;
-}  

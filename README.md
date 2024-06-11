@@ -53,69 +53,129 @@ yarn build
 
 ### Интерфейсы
 
-#### IProductItem
+## IPage
 
-Интерфейс данных карточки, которые подтягиваются с сервера:
+Представляет страницу со списком HTML-элементов.
 
-- `id: string` - айди товара
-- `description?: string` - описание, появляется при открытии модального окна товара
-- `image: string` - картинка товара
-- `title: string` - название
-- `category: string[]` - категория, к которой относится товар (софт-скил, хард-скил, кнопка, дополнительное, другое)
-- `price: number` - цена
+- `itemList: HTMLElement[]` - Список HTML-элементов на странице.
 
-#### IAppState
+## IProduct
 
-Интерфейс состояния для работы с элементами страницы:
+Представляет продукт с различными атрибутами.
 
-- `catalog: IProductItem[]` - массив объектов товаров
-- `basket: string` - содержит айди товаров в корзине
-- `preview: string | null` - содержит айди товара для просмотра
-- `order: IOrder | null` - содержит информацию о заказе
+- `category: string` - Категория продукта.
+- `title: string` - Название продукта.
+- `description: string` - Описание продукта.
+- `image: string` - URL изображения продукта.
+- `price: number` - Цена продукта.
 
-#### IOrder
+## IProductItem
 
-Интерфейс заказа:
+Представляет элемент продукта, полученный с сервера.
 
-- `items: string[]` - содержит информацию о заказе
+- `id: string` - Идентификатор продукта.
+- `description: string` - Описание продукта, появляется в модальном окне.
+- `image: string` - URL изображения продукта.
+- `title: string` - Название продукта.
+- `category: string` - Категория продукта.
+- `price: number` - Цена продукта.
 
-#### Payment
+## IAppState
 
-Тип для указания способов оплаты: `'онлайн' | 'при получении'`
+Представляет состояние для работы с элементами страницы.
 
-#### IOrderForm
+- `itemList: IProductItem[]` - Массив объектов товаров.
+- `basket: string` - Содержит идентификаторы товаров в корзине.
+- `preview: string | null` - Содержит идентификатор товара для просмотра.
+- `order: IOrder | null` - Содержит информацию о заказе.
+- `formErrors: FormErrors` - Содержит ошибки формы.
 
-Интерфейс формы заказа:
+## IProductPreview
 
-- `payment: Payment` - способ оплаты
-- `address: string` - адрес доставки
+Представляет предварительный просмотр продукта.
 
-#### IContactForm
+- `text: string` - Текст для предварительного просмотра продукта.
 
-Интерфейс формы заполнения контактов заказчика:
+## IProductBasket
 
-- `email: string` - электронная почта заказчика
-- `phone: string` - его номер телефона
+Представляет продукт в корзине.
 
-#### ISuccessfulOrder
+- `index: number` - Индекс продукта в корзине.
+- `title: string` - Название продукта.
+- `price: number` - Цена продукта.
 
-Интерфейс сообщения об успешном оформлении заказа:
+## IActions
 
-- `id: string` - айди заказа
-- `total: number` - сумма заказа
+Представляет действия, связанные с элементом.
 
-#### IBasket
+- `onClick: (event: MouseEvent) => void` - Обработчик события клика.
 
-Интерфейс корзины покупок:
+## IBasket
 
-- `data: IProductItem[]` - данные содержимого корзины (товары)
-- `price: number` - цена товаров в корзине
+Представляет корзину покупок.
 
-#### IBasketSum
+- `items: HTMLElement[]` - Список товаров в корзине.
+- `total: number` - Общая стоимость товаров в корзине.
 
-Интерфейс счетчика суммы заказов в корзине:
+## IValidation
 
-- `sum: number` - сумма
+Представляет результаты валидации.
+
+- `valid: boolean` - Указывает, прошла ли валидация.
+- `errors: string[]` - Список ошибок валидации.
+
+## FormErrors
+
+Представляет ошибки в форме, где ключи - это названия полей.
+
+- `Partial<Record<keyof IOrder, string>>` - Соответствие названий полей сообщениям об ошибках.
+
+## IOrderForm
+
+Представляет форму заказа.
+
+- `payment?: string` - Способ оплаты.
+- `address?: string` - Адрес доставки.
+- `phone?: string` - Телефон клиента.
+- `email?: string` - Электронная почта клиента.
+- `total?: string | number` - Общая сумма заказа.
+
+## IOrder
+
+Представляет заказ, расширяя форму заказа.
+
+- `items: string[]` - Список идентификаторов товаров в заказе.
+
+## ISuccess
+
+Представляет успешную операцию.
+
+- `total: number` - Общая сумма.
+
+## ISuccessActions
+
+Представляет действия для успешной операции.
+
+- `onClick: () => void` - Обработчик события клика.
+
+## IModalData
+
+Представляет данные для модального окна.
+
+- `content: HTMLElement` - Содержимое модального окна.
+
+## ApiListResponse<Type>
+
+Представляет ответ от API со списком элементов.
+
+- `total: number` - Общее количество элементов.
+- `items: Type[]` - Список элементов.
+
+## ISuccessfulForm
+
+Представляет успешную отправку формы.
+
+- `id: string` - Идентификатор отправки формы.
 
 ### Компоненты
 
@@ -125,8 +185,20 @@ yarn build
 
 **Методы:**
 
-- `setCatalog(catalog: IProductItem[]): void` - устанавливает список карточек.
-- `setPreview(preview: string | null): void` - устанавливает предпросмотр карточек.
+- `setCatalog(items: IProductItem[]): void` - Устанавливает список карточек товаров.
+- `setPreview(item: IProductItem): void` - Устанавливает предпросмотр карточки товара.
+- `addToBasket(item: IProductItem): void` - Добавляет товар в корзину.
+- `get basketList(): IProductItem[]` - Возвращает список товаров в корзине.
+- `get isBasketEmpty(): boolean` - Проверяет, пуста ли корзина.
+- `set total(value: number): void` - Устанавливает общую сумму заказа.
+- `getTotal(): number` - Возвращает общую сумму товаров в корзине.
+- `removeFromBasket(item: IProductItem): void` - Удаляет товар из корзины.
+- `clearBasket(): void` - Очищает корзину.
+- `setOrderField(field: keyof IOrderForm, value: string): void` - Устанавливает значение поля в заказе.
+- `setContactsField(field: keyof IOrderForm, value: string): void` - Устанавливает значение поля в контактной информации.
+- `validateOrder(): boolean` - Проверяет валидность данных заказа.
+- `validateContacts(): boolean` - Проверяет валидность контактных данных.
+- `clearOrder(): void` - Очищает данные заказа.
 
 #### WebLarekApi
 
@@ -148,23 +220,23 @@ constructor(cdn: string, baseUrl: string, options?: RequestInit)
 
 **Конструктор:**
 
-constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions)
+constructor(protected blockName: string, container: HTMLElement, actions?: IProductActions)
 
 Принимает контейнер, в который будет рендериться компонент.
 
 **Методы класса:**
 
-- `set id(value: string)` - метод, устанавливает айди карточки.
-- `get id(): string` - получает айди карточки.
-- `set title(value: string)` - устанавливает название карточки.
-- `get title(): string` - получает название карточки.
-- `set image(value: string)` - устанавливает изображение карточки.
-- `set category(value: string)` - устанавливает категорию карточки.
-- `set inBasket(value: boolean)` - устанавливает состояние "в корзине" для карточки.
-- `set price(value: string)` - устанавливает цену карточки.
-- `set description(value: string | string[])` - устанавливает описание карточки.
+- `set id(value: string)` - Устанавливает айди карточки.
+- `get id(): string` - Получает айди карточки.
+- `set title(value: string)` - Устанавливает название карточки.
+- `get title(): string` - Получает название карточки.
+- `set image(value: string)` - Устанавливает изображение карточки.
+- `set category(value: string)` - Устанавливает категорию карточки.
+- `set inBasket(value: boolean)` - Устанавливает состояние "в корзине" для карточки.
+- `set price(value: string)` - Устанавливает цену карточки.
+- `set description(value: string | string[])` - Устанавливает описание карточки.
 
-#### Api
+### Api
 
 Компонент для выполнения запросов к АПИ.
 
@@ -178,9 +250,15 @@ constructor(baseURL: string, options: RequestInit)
 
 - `protected handleResponse(response: Response): Promise<object>` - Обрабатывает ответ от сервера. Возвращает Promise с результатом в формате JSON, если ответ успешен. В случае ошибки возвращает отклоненный Promise с текстом ошибки или статусом ответа.
 - `get(uri: string): Promise<object>` - Выполняет GET-запрос по указанному URI относительно `baseUrl`. Возвращает Promise с результатом ответа.
-- `post(uri: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>` - Выполняет запрос к серверу методом POST, PUT или DELETE в зависимости от параметра method.
+- `post(uri: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>` - Выполняет запрос к серверу методом POST, PUT или DELETE в зависимости от параметра `method`. Возвращает Promise с результатом ответа.
 
-#### Modal
+**Типы:**
+
+- `ApiListResponse<Type>` - Тип, представляющий ответ от сервера с массивом объектов.
+
+- `ApiPostMethods` - Тип, представляющий методы запроса POST, PUT или DELETE.
+
+### Modal
 
 Компонент модального окна. Наследуется от класса `Component`.
 
@@ -192,14 +270,14 @@ constructor(container: HTMLElement, protected events: IEvents)
 
 **Методы класса:**
 
-- `set content(value: HTMLElement)` - устанавливает содержимое модального окна.
-- `open()` - открывает модальное окно.
-- `order()` - запускает событие открытия заказа.
-- `orderContacts()` - запускает событие открытия контактов для заказа.
-- `close()` - закрывает модальное окно.
-- `render(data: IModalData): HTMLElement` - рендерит модальное окно.
+- `set content(value: HTMLElement)` - Устанавливает содержимое модального окна.
+- `open()` - Открывает модальное окно.
+- `order()` - Запускает событие открытия заказа.
+- `orderContacts()` - Запускает событие открытия контактов для заказа.
+- `close()` - Закрывает модальное окно.
+- `render(data: IModalData): HTMLElement` - Рендерит модальное окно.
 
-#### Basket
+### Basket
 
 Компонент корзины товаров. Наследует класс `Component`.
 
@@ -211,9 +289,9 @@ constructor(container: HTMLElement, protected events: EventEmitter)
 
 **Методы класса:**
 
-- `set items(items: HTMLElement[])` - устанавливает список товаров в корзине.
-- `set selected(items: ProductItem[])` - устанавливает выбранные товары в корзине и включает/отключает кнопку оформления заказа в зависимости от наличия выбранных товаров.
-- `set total(total: string)` - устанавливает общую стоимость товаров в корзине.
+- `set items(items: HTMLElement[])` - Устанавливает список товаров в корзине.
+- `set selected(items: ProductItem[])` - Устанавливает выбранные товары в корзине и включает/отключает кнопку оформления заказа в зависимости от наличия выбранных товаров.
+- `set total(total: string)` - Устанавливает общую стоимость товаров в корзине.
 
 #### Page
 
@@ -245,7 +323,7 @@ constructor(container: HTMLFormElement, events: IEvents)
 - `set errors(value: string)` - устанавливает текст ошибки валидации формы.
 - `render(state: Partial<IFormState>)` - отображает компонент формы и принимает состояние формы, включая валидность и ошибки валидации.
 
-#### Order
+#### OrderForm
 
 Отображение модального окна заполнения адреса. Наследуется от класса `Form`.
 
@@ -258,7 +336,7 @@ constructor(container: HTMLFormElement, events: IEvents)
 - `set payment(name: string)` - переключение между кнопками.
 - `set address` - ввод адреса доставки.
 
-#### Contacts
+#### ContactForm
 
 Отображение модального окна заполнения почты и телефона. Наследуется от класса `Form`.
 
@@ -271,7 +349,7 @@ constructor(container: HTMLFormElement, events: IEvents)
 - `set phone` - ввод телефона.
 - `set email` - ввод почты.
 
-#### Success
+#### SuccessForm
 
 Отображение модального удачного заказа. Наследуется от класса `Component`.
 
@@ -281,7 +359,7 @@ constructor(container: HTMLElement, actions: ISuccessActions)
 
 **Методы:**
 
-- `set total` - устанавливает текст в элемент.
+- `set total(value: number | string)` - Устанавливает текст в элементе.
 
 ### Базовый код
 
