@@ -33,10 +33,18 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('preview:changed', item);
 	}
 
+	// Проверка наличия товара в корзине
+	isItemInBasket(item: IProductItem): boolean {
+		return this.basket.some((basketItem) => basketItem.id === item.id);
+	}
+
 	// Добавление товара в корзину
 	addToBasket(item: IProductItem): void {
-		this.basket.push(item);
-		this.order.items.push(item.id);
+		if (!this.isItemInBasket(item)) {
+			this.basket.push(item);
+			this.order.items.push(item.id);
+			this.emitChanges('basket:changed', this.basket);
+		}
 	}
 
 	// Получение списка товаров в корзине
@@ -65,6 +73,7 @@ export class AppState extends Model<IAppState> {
 		this.order.items = this.order.items.filter(
 			(orderItemId) => orderItemId !== item.id
 		);
+		this.emitChanges('basket:changed', this.basket);
 	}
 
 	// Очистка корзины

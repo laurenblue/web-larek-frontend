@@ -71,6 +71,7 @@ function handleCardSelect(item: IProductItem) {
 
 // Отрисовка превью карточки товара
 function renderCardPreview(item: IProductItem) {
+	const isInBasket = appState.isItemInBasket(item);
 	const card = new CardPreview(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => events.emit('card:add', item),
 	});
@@ -83,11 +84,16 @@ function renderCardPreview(item: IProductItem) {
 			category: item.category,
 		}),
 	});
+	card.updateButtonState(isInBasket);
 }
 
 // Обработчик добавления товара в корзину
 function handleCardAdd(item: IProductItem) {
-	appState.addToBasket(item);
+	if (appState.isItemInBasket(item)) {
+		appState.removeFromBasket(item);
+	} else {
+		appState.addToBasket(item);
+	}
 	page.counter = appState.basketList.length;
 	modal.close();
 }
@@ -214,16 +220,16 @@ function handleContactsSubmit() {
 		.catch(console.error);
 }
 
-//создаю прокручивание до модального окна в случае клика на товары внизу списка 
+//создаю прокручивание до модального окна в случае клика на товары внизу списка
 events.on('modal:open', () => {
-    document.body.style.overflow = 'hidden';
+	document.body.style.overflow = 'hidden';
 
-    const modalContainer = document.getElementById('modal-container');
-    if (modalContainer) {
-        modalContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+	const modalContainer = document.getElementById('modal-container');
+	if (modalContainer) {
+		modalContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	}
 });
 
 events.on('modal:close', () => {
-    document.body.style.overflow = '';
+	document.body.style.overflow = '';
 });

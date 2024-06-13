@@ -51,9 +51,10 @@ export class Card<T> extends Component<IProduct> {
 	set price(value: string) {
 		if (value === null) {
 			this.setText(this._price, 'Бесценно');
-			this._button?.setAttribute('disabled', 'disabled');
+			this.setDisabled(this._button, true);
 		} else {
 			this.setText(this._price, `${value} синапсов`);
+			this.setDisabled(this._button, false);
 		}
 	}
 }
@@ -80,6 +81,17 @@ export class CardPreview extends Card<IProductPreview> {
 	// Установка текста описания товара
 	set text(value: string) {
 		this.setText(this._text, value);
+	}
+
+	// Обновление состояния кнопки (добавить/удалить)
+	updateButtonState(isInBasket: boolean): void {
+		if (isInBasket) {
+			this._button.textContent = 'Удалить из корзины';
+		} else {
+			this._button.textContent = 'Добавить в корзину';
+		}
+		this.toggleClass(this._button, 'remove-button', isInBasket);
+		this.toggleClass(this._button, 'add-button', !isInBasket);
 	}
 }
 
