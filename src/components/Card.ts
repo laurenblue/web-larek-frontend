@@ -7,6 +7,7 @@ export class Card<T> extends Component<IProduct> {
 	protected _title: HTMLElement;
 	protected _image: HTMLImageElement;
 	protected _price: HTMLElement;
+	protected _button?: HTMLButtonElement;
 	protected _colors: Record<string, string> = {
 		'софт-скил': 'soft',
 		другое: 'other',
@@ -47,18 +48,19 @@ export class Card<T> extends Component<IProduct> {
 	}
 
 	// Установка цены товара
-	set price(value: number | null) {
-		this.setText(
-			this._price,
-			value ? `${value.toString()} синапсов` : 'Бесценно'
-		);
+	set price(value: string) {
+		if (value === null) {
+			this.setText(this._price, 'Бесценно');
+			this._button?.setAttribute('disabled', 'disabled');
+		} else {
+			this.setText(this._price, `${value} синапсов`);
+		}
 	}
 }
 
 // Класс для управления превью карточкой товара
 export class CardPreview extends Card<IProductPreview> {
 	protected _text: HTMLElement; // Элемент для текста описания товара
-	protected _button: HTMLElement | null; // Кнопка для действия на карточке
 
 	// Конструктор принимает контейнер и действия
 	constructor(container: HTMLElement, actions?: IActions) {
