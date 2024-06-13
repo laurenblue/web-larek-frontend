@@ -1,5 +1,5 @@
 import { Component } from './base/Component';
-import { IEvents } from './base/events';
+import { IEvents } from './base/Events';
 import { ensureElement } from '../utils/utils';
 import { IValidation } from '../types';
 
@@ -42,7 +42,7 @@ export class Form<T> extends Component<IValidation> {
 
 	// Установка состояния валидности формы
 	set valid(value: boolean) {
-		this._submit.disabled = !value;
+		this.setDisabled(this._submit, !value);
 	}
 
 	// Установка текста ошибок формы

@@ -1,7 +1,7 @@
 import { Component } from './base/Component';
 import { createElement, ensureElement } from '../utils/utils';
 import { IBasket } from '../types';
-import { EventEmitter } from './base/events';
+import { EventEmitter } from './base/Events';
 
 const EMPTY_BASKET_MESSAGE = 'Корзина пуста';
 const CURRENCY_UNIT = 'синапсов';
@@ -62,7 +62,7 @@ export class Basket extends Component<IBasket> {
 	// Установка состояния кнопки оформления заказа
 	setButtonState(disabled: boolean): void {
 		if (this.button) {
-			this.button.disabled = disabled;
+			this.setDisabled(this.button, disabled);
 		}
 	}
 }

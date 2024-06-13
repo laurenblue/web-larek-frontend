@@ -1,6 +1,6 @@
 import { Component } from './base/Component';
 import { ensureElement } from '../utils/utils';
-import { IEvents } from './base/events';
+import { IEvents } from './base/Events';
 import { IModalData } from '../types';
 
 export class Modal extends Component<IModalData> {
@@ -28,15 +28,31 @@ export class Modal extends Component<IModalData> {
 		this._content.replaceChildren(value);
 	}
 
+	// Метод для переключения модального окна
+	_toggleModal(state: boolean = true) {
+		this.toggleClass(this.container, 'modal_active', state);
+	}
+
+	// Обработчик Escape для закрытия модального окна
+	_handleEscape = (evt: KeyboardEvent) => {
+		if (evt.key === 'Escape') {
+			this.close();
+		}
+	};
+
 	// Открытие модального окна
 	open() {
-		this.container.classList.add('modal_active');
+		this._toggleModal(); // открываем
+		// навешиваем обработчик при открытии
+		document.addEventListener('keydown', this._handleEscape);
 		this.events.emit('modal:open');
 	}
 
 	// Закрытие модального окна
 	close() {
-		this.container.classList.remove('modal_active');
+		this._toggleModal(false); // закрываем
+		// удаляем обработчик при закрытии
+		document.removeEventListener('keydown', this._handleEscape);
 		this.content = null;
 		this.events.emit('modal:close');
 	}

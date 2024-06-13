@@ -1,7 +1,7 @@
 import { IPage } from '../types';
 import { Component } from './base/Component';
 import { ensureElement } from '../utils/utils';
-import { IEvents } from './base/events';
+import { IEvents } from './base/Events';
 
 export class Page extends Component<IPage> {
 	protected _counterBasket: HTMLElement;

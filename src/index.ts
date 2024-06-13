@@ -1,6 +1,6 @@
 import './scss/styles.scss';
 import { API_URL, CDN_URL } from './utils/constants';
-import { EventEmitter } from './components/base/events';
+import { EventEmitter } from './components/base/Events';
 import { WebLarekApi } from './components/WebLarekApi';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { AppState } from './components/AppState';
