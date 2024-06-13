@@ -213,3 +213,17 @@ function handleContactsSubmit() {
 		})
 		.catch(console.error);
 }
+
+//создаю прокручивание до модального окна в случае клика на товары внизу списка 
+events.on('modal:open', () => {
+    document.body.style.overflow = 'hidden';
+
+    const modalContainer = document.getElementById('modal-container');
+    if (modalContainer) {
+        modalContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+
+events.on('modal:close', () => {
+    document.body.style.overflow = '';
+});
