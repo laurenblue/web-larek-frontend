@@ -2,6 +2,25 @@ import { Component } from './base/Component';
 import { ensureElement } from '../utils/utils';
 import { IProduct, IProductPreview, IProductBasket, IActions } from '../types';
 
+function setPrice(
+	element: HTMLElement,
+	button: HTMLElement | null,
+	value: string | number | null,
+	setDisabled: (element: HTMLElement, state: boolean) => void
+) {
+	if (value === null) {
+		element.textContent = 'Бесценно';
+		if (button) {
+			setDisabled(button, true);
+		}
+	} else {
+		element.textContent = `${value} синапсов`;
+		if (button) {
+			setDisabled(button, false);
+		}
+	}
+}
+
 export class Card<T> extends Component<IProduct> {
 	protected _category: HTMLElement;
 	protected _title: HTMLElement;
@@ -23,13 +42,11 @@ export class Card<T> extends Component<IProduct> {
 		this._image = ensureElement<HTMLImageElement>('.card__image', container);
 		this._price = ensureElement<HTMLElement>('.card__price', container);
 
-		// Установка обработчика события клика по карточке
 		if (actions?.onClick) {
 			container.addEventListener('click', actions.onClick);
 		}
 	}
 
-	// Установка категории товара и соответствующего CSS-класса
 	set category(value: string) {
 		this.setText(this._category, value);
 		this._category.className = `card__category card__category_${
@@ -37,39 +54,32 @@ export class Card<T> extends Component<IProduct> {
 		}`;
 	}
 
-	// Установка заголовка товара
 	set title(value: string) {
 		this.setText(this._title, value);
 	}
 
-	// Установка изображения товара
 	set image(value: string) {
 		this.setImage(this._image, value, this._title.textContent || '');
 	}
 
-	// Установка цены товара
-	set price(value: string) {
-		if (value === null) {
-			this.setText(this._price, 'Бесценно');
-			this.setDisabled(this._button, true);
-		} else {
-			this.setText(this._price, `${value} синапсов`);
-			this.setDisabled(this._button, false);
-		}
+	set price(value: string | number | null) {
+		setPrice(
+			this._price,
+			this._button || null,
+			value,
+			this.setDisabled.bind(this)
+		);
 	}
 }
 
-// Класс для управления превью карточкой товара
 export class CardPreview extends Card<IProductPreview> {
-	protected _text: HTMLElement; // Элемент для текста описания товара
+	protected _text: HTMLElement;
 
-	// Конструктор принимает контейнер и действия
 	constructor(container: HTMLElement, actions?: IActions) {
 		super(container, actions);
 		this._text = ensureElement<HTMLElement>('.card__text', container);
-		this._button = container.querySelector('.card__button');
+		this._button = container.querySelector<HTMLButtonElement>('.card__button');
 
-		// Установка обработчика события клика по кнопке
 		if (actions?.onClick && this._button) {
 			this._button.addEventListener('click', (event: MouseEvent) => {
 				event.stopPropagation();
@@ -78,20 +88,18 @@ export class CardPreview extends Card<IProductPreview> {
 		}
 	}
 
-	// Установка текста описания товара
 	set text(value: string) {
 		this.setText(this._text, value);
 	}
 
-	// Обновление состояния кнопки (добавить/удалить)
 	updateButtonState(isInBasket: boolean): void {
-		if (isInBasket) {
-			this._button.textContent = 'Удалить из корзины';
-		} else {
-			this._button.textContent = 'Добавить в корзину';
+		if (this._button) {
+			this._button.textContent = isInBasket
+				? 'Удалить из корзины'
+				: 'Добавить в корзину';
+			this.toggleClass(this._button, 'remove-button', isInBasket);
+			this.toggleClass(this._button, 'add-button', !isInBasket);
 		}
-		this.toggleClass(this._button, 'remove-button', isInBasket);
-		this.toggleClass(this._button, 'add-button', !isInBasket);
 	}
 }
 
@@ -99,15 +107,15 @@ export class CardBasket extends Component<IProductBasket> {
 	protected _index: HTMLElement;
 	protected _title: HTMLElement;
 	protected _price: HTMLElement;
-	protected _button: HTMLElement | null;
+	protected _button: HTMLButtonElement | null;
 
 	constructor(container: HTMLElement, actions?: IActions) {
 		super(container);
 		this._index = ensureElement<HTMLElement>('.basket__item-index', container);
 		this._title = ensureElement<HTMLElement>('.card__title', container);
 		this._price = ensureElement<HTMLElement>('.card__price', container);
-		this._button = container.querySelector('.card__button');
-		// Установка обработчика события клика по кнопке удаления
+		this._button = container.querySelector<HTMLButtonElement>('.card__button');
+
 		if (actions?.onClick && this._button) {
 			this._button.addEventListener('click', (event: MouseEvent) => {
 				event.stopPropagation();
@@ -116,21 +124,15 @@ export class CardBasket extends Component<IProductBasket> {
 		}
 	}
 
-	// Установка индекса товара в корзине
 	set index(value: number) {
 		this.setText(this._index, value.toString());
 	}
 
-	// Установка заголовка товара
 	set title(value: string) {
 		this.setText(this._title, value);
 	}
 
-	// Установка цены товара
 	set price(value: number | null) {
-		this.setText(
-			this._price,
-			value ? `${value.toString()} синапсов` : 'Бесценно'
-		);
+		setPrice(this._price, this._button, value, this.setDisabled.bind(this));
 	}
 }
