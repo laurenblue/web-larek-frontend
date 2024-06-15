@@ -17,15 +17,34 @@ export class Modal extends Component<IModalData> {
 		);
 		this._content = ensureElement<HTMLElement>('.modal__content', container);
 
-		// Установка обработчиков событий на кнопке закрытия и контейнере
+		// Установка обработчиков событий
+		this._initializeEventListeners();
+	}
+
+	_initializeEventListeners() {
 		this._closeButton.addEventListener('click', this.close.bind(this));
 		this.container.addEventListener('click', this.close.bind(this));
-		this._content.addEventListener('click', (event) => event.stopPropagation());
+		this._content.addEventListener('click', this._stopPropagation);
+
+		// Добавление события stopPropagation ко всем дочерним элементам внутри _content
+		this._addStopPropagationToChildren(this._content);
+	}
+
+	_stopPropagation(event: Event): void {
+		event.stopPropagation();
+	}
+
+	_addStopPropagationToChildren(element: HTMLElement) {
+		const allChildren = element.querySelectorAll('*');
+		allChildren.forEach((child) => {
+			child.addEventListener('click', this._stopPropagation);
+		});
 	}
 
 	// Установка содержимого модального окна
 	set content(value: HTMLElement) {
 		this._content.replaceChildren(value);
+		this._addStopPropagationToChildren(this._content);
 	}
 
 	// Метод для переключения модального окна
@@ -42,8 +61,7 @@ export class Modal extends Component<IModalData> {
 
 	// Открытие модального окна
 	open() {
-		this._toggleModal(); // открываем
-		// навешиваем обработчик при открытии
+		this._toggleModal(true); // открываем
 		document.addEventListener('keydown', this._handleEscape);
 		this.events.emit('modal:open');
 	}
@@ -51,9 +69,8 @@ export class Modal extends Component<IModalData> {
 	// Закрытие модального окна
 	close() {
 		this._toggleModal(false); // закрываем
-		// удаляем обработчик при закрытии
 		document.removeEventListener('keydown', this._handleEscape);
-		this.content = null;
+		this._content.innerHTML = ''; // Очистка содержимого вместо замены на null
 		this.events.emit('modal:close');
 	}
 

@@ -85,7 +85,6 @@ export class CardPreview extends Card<IProductPreview> {
 
 		if (actions?.onClick && this._button) {
 			this._button.addEventListener('click', (event: MouseEvent) => {
-				event.stopPropagation();
 				actions.onClick!(event);
 			});
 		}
@@ -131,7 +130,6 @@ export class CardBasket extends Component<IProductBasket> {
 
 		if (actions?.onClick && this._button) {
 			this._button.addEventListener('click', (event: MouseEvent) => {
-				event.stopPropagation();
 				actions.onClick!(event);
 			});
 		}
