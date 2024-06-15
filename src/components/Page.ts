@@ -29,4 +29,12 @@ export class Page extends Component<IPage> {
 	set catalog(items: HTMLElement[]) {
 		this._itemList.replaceChildren(...items);
 	}
+	//метод блокировки прокрутки страницы при открытом модальном окне
+	set locked(value: boolean) {
+		if (value) {
+			this._wrapper.classList.add('page__wrapper_locked');
+		} else {
+			this._wrapper.classList.remove('page__wrapper_locked');
+		}
+	}
 }

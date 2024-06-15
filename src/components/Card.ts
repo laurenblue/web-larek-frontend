@@ -4,18 +4,20 @@ import { IProduct, IProductPreview, IActions, IProductBasket } from '../types';
 
 function setPrice(
 	element: HTMLElement,
-	button: HTMLElement | null,
+	button: HTMLButtonElement | null,
 	value: string | number | null,
 	setDisabled: (element: HTMLElement, state: boolean) => void
 ) {
 	if (value === null) {
 		element.textContent = 'Бесценно';
 		if (button) {
+			button.textContent = 'Нельзя купить';
 			setDisabled(button, true);
 		}
 	} else {
 		element.textContent = `${value} синапсов`;
 		if (button) {
+			button.textContent = 'Добавить в корзину';
 			setDisabled(button, false);
 		}
 	}
@@ -101,11 +103,16 @@ export class CardPreview extends Card<IProductPreview> {
 
 	updateButtonState(isInBasket: boolean): void {
 		if (this._button) {
-			this._button.textContent = isInBasket
-				? 'Удалить из корзины'
-				: 'Добавить в корзину';
-			this.toggleClass(this._button, 'remove-button', isInBasket);
-			this.toggleClass(this._button, 'add-button', !isInBasket);
+			if (this._price.textContent === 'Бесценно') {
+				this._button.textContent = 'Нельзя купить';
+				this.setDisabled(this._button, true);
+			} else {
+				this._button.textContent = isInBasket
+					? 'Удалить из корзины'
+					: 'Добавить в корзину';
+				this.toggleClass(this._button, 'remove-button', isInBasket);
+				this.toggleClass(this._button, 'add-button', !isInBasket);
+			}
 		}
 	}
 }
