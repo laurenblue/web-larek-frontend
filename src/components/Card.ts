@@ -6,18 +6,19 @@ function setPrice(
 	element: HTMLElement,
 	button: HTMLButtonElement | null,
 	value: string | number | null,
+	setText: (element: HTMLElement, value: unknown) => void,
 	setDisabled: (element: HTMLElement, state: boolean) => void
 ) {
 	if (value === null) {
-		element.textContent = 'Бесценно';
+		setText(element, 'Бесценно');
 		if (button) {
-			button.textContent = 'Нельзя купить';
+			setText(button, 'Нельзя купить');
 			setDisabled(button, true);
 		}
 	} else {
-		element.textContent = `${value} синапсов`;
+		setText(element, `${value} синапсов`);
 		if (button) {
-			button.textContent = 'Добавить в корзину';
+			setText(button, 'Добавить в корзину');
 			setDisabled(button, false);
 		}
 	}
@@ -69,6 +70,7 @@ export class Card<T> extends Component<IProduct> {
 			this._price,
 			this._button || null,
 			value,
+			this.setText.bind(this),
 			this.setDisabled.bind(this)
 		);
 	}
@@ -104,12 +106,10 @@ export class CardPreview extends Card<IProductPreview> {
 	updateButtonState(isInBasket: boolean): void {
 		if (this._button) {
 			if (this._price.textContent === 'Бесценно') {
-				this._button.textContent = 'Нельзя купить';
+				this.setText(this._button, 'Нельзя купить');
 				this.setDisabled(this._button, true);
 			} else {
-				this._button.textContent = isInBasket
-					? 'Удалить из корзины'
-					: 'Добавить в корзину';
+				this.setText(this._button, isInBasket ? 'Удалить из корзины' : 'Добавить в корзину');
 				this.toggleClass(this._button, 'remove-button', isInBasket);
 				this.toggleClass(this._button, 'add-button', !isInBasket);
 			}
@@ -154,6 +154,6 @@ export class CardBasket extends Component<IProductBasket> {
 	}
 
 	set price(value: number | null) {
-		setPrice(this._price, this._button, value, this.setDisabled.bind(this));
+		setPrice(this._price, this._button, value, this.setText.bind(this), this.setDisabled.bind(this));
 	}
 }
