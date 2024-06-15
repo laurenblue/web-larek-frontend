@@ -1,6 +1,6 @@
 import { Component } from './base/Component';
 import { ensureElement } from '../utils/utils';
-import { IProduct, IProductPreview, IProductBasket, IActions } from '../types';
+import { IProduct, IProductPreview, IActions, IProductBasket } from '../types';
 
 function setPrice(
 	element: HTMLElement,
@@ -83,7 +83,14 @@ export class CardPreview extends Card<IProductPreview> {
 		if (actions?.onClick && this._button) {
 			this._button.addEventListener('click', (event: MouseEvent) => {
 				event.stopPropagation();
-				actions.onClick(event);
+				actions.onClick!(event);
+			});
+		}
+		if (actions?.onClick) {
+			container.addEventListener('click', (event: MouseEvent) => {
+				if (!(event.target as HTMLElement).closest('.card__button')) {
+					actions.onClick!(event);
+				}
 			});
 		}
 	}
@@ -119,7 +126,14 @@ export class CardBasket extends Component<IProductBasket> {
 		if (actions?.onClick && this._button) {
 			this._button.addEventListener('click', (event: MouseEvent) => {
 				event.stopPropagation();
-				actions.onClick(event);
+				actions.onClick!(event);
+			});
+		}
+		if (actions?.onClick) {
+			container.addEventListener('click', (event: MouseEvent) => {
+				if (!(event.target as HTMLElement).closest('.card__button')) {
+					actions.onClick!(event);
+				}
 			});
 		}
 	}
