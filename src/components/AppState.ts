@@ -64,7 +64,7 @@ export class AppState extends Model<IAppState> {
 
 	// Получение общей суммы товаров в корзине
 	getTotal(): number {
-		return this.basket.reduce((acc, item) => acc + item.price, 0);
+		return this.basketList.reduce((total, item) => total + item.price, 0);
 	}
 
 	// Удаление товара из корзины

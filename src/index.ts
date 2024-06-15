@@ -206,15 +206,15 @@ function handleContactsSubmit() {
 	api
 		.orderCard(appState.order)
 		.then(() => {
+			const totalAmount = appState.getTotal();
 			appState.clearBasket();
 			page.counter = appState.basketList.length;
 			const success = new Success(cloneTemplate(successTemplate), {
 				onClick: () => modal.close(),
 			});
+			success.total = totalAmount;
 			modal.render({
-				content: success.render({
-					total: appState.getTotal(),
-				}),
+				content: success.render(),
 			});
 		})
 		.catch(console.error);
