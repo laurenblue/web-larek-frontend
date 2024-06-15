@@ -18,7 +18,6 @@ function setPrice(
 	} else {
 		setText(element, `${value} синапсов`);
 		if (button) {
-			setText(button, 'Добавить в корзину');
 			setDisabled(button, false);
 		}
 	}
